@@ -106,6 +106,14 @@ where
             hdr_len: hdr_len as u8,
         })
     }
+
+    /// Return the inner `Producer`.
+    ///
+    /// Note: you must commit only valid frames to the producer, otherwise
+    /// errors will arise at the consumer end.
+    pub fn downgrade(self) -> Producer<'a, N> {
+        self.producer
+    }
 }
 
 /// A consumer of Framed data
@@ -144,6 +152,13 @@ where
         grant_r.shrink(total_len);
 
         Some(FrameGrantR { grant_r, hdr_len })
+    }
+
+    /// Return the inner `Consumer`.
+    ///
+    /// This will return not only the framed data, but also the frames.
+    pub fn downgrade(self) -> Consumer<'a, N> {
+        self.consumer
     }
 }
 
