@@ -35,7 +35,8 @@
 //!
 //! For bbqueue, the sender doing the encoding and the receiver doing the decoding
 //! will always reside on the same platform, meaning we CAN make these non-portable
-//! assumptions for the sake of performance/simplicity.
+//! assumptions for the sake of performance/simplicity. WHY? Also, does bbqueue specify
+//! endianness of the header?
 
 const USIZE_SIZE: usize = core::mem::size_of::<usize>();
 const USIZE_SIZE_PLUS_ONE: usize = USIZE_SIZE + 1;
