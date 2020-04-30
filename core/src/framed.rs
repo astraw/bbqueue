@@ -154,6 +154,34 @@ where
         Some(FrameGrantR { grant_r, hdr_len })
     }
 
+    /// Obtain the next available frame, if any
+    pub fn read_partial(&mut self) -> Option<FrameGrantR<'a, N>> {
+        // Get all available bytes. We may receive a partial frame,
+        // but zero length will here have an early return of None.
+        let mut grant_r = self.consumer.read().ok()?;
+
+        let hdr_len = decoded_len(grant_r[0]);
+        if grant_r.len() < hdr_len {
+            return None;
+        }
+
+        // The header consists of a single usize, encoded in little
+        // endian.
+        let frame_len = decode_usize(&grant_r);
+
+        let total_len = frame_len + hdr_len;
+        let hdr_len = hdr_len as u8;
+
+        if grant_r.len() < total_len {
+            return None;
+        }
+
+        // Reduce the grant down to the size of the frame with a header
+        grant_r.shrink(total_len);
+
+        Some(FrameGrantR { grant_r, hdr_len })
+    }
+
     /// Return the inner `Consumer`.
     ///
     /// This will return not only the framed data, but also the frames.
