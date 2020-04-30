@@ -154,7 +154,10 @@ where
         Some(FrameGrantR { grant_r, hdr_len })
     }
 
-    /// Obtain the next available frame, if any
+    /// Obtain the next available frame, if any.
+    ///
+    /// This is like `.read()` but does not panic if the data is partial. (For
+    /// example, if a downgraded `FrameProducer` was used to send the data.)
     pub fn read_partial(&mut self) -> Option<FrameGrantR<'a, N>> {
         // Get all available bytes. We may receive a partial frame,
         // but zero length will here have an early return of None.
