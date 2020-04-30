@@ -139,8 +139,8 @@ where
         // and frame. `Consumer::read` will return an Error when
         // there are 0 bytes available.
 
-        // The header consists of a single usize, encoded in native
-        // endianess order
+        // The header consists of a single usize, encoded in little
+        // endian.
         let frame_len = decode_usize(&grant_r);
         let hdr_len = decoded_len(grant_r[0]);
         let total_len = frame_len + hdr_len;
